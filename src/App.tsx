@@ -15,10 +15,13 @@ function App() {
 
   const [error, setError] = useState(false);
 
+  const [kanaOut, setKanaOut] = useState("");
   const setRandomKana = () => {
     const randomIndex = Math.floor(Math.random() * kana.length);
     setCurrent(randomIndex);
+    setKanaOut(randomSelect(kana[current].hiragana, kana[current].katakana));
   };
+  const [nextKana, setNextKana] = useState(true);
 
   const handleChange = (e) => {
     setInput(e.target.value);
@@ -36,12 +39,17 @@ function App() {
       setStreak(0);
     }
 
+    setNextKana(true);
     setInput("");
     setRandomKana();
+    setTimeout(() => {
+      setNextKana(false);
+    }, 1000);
   };
 
   useEffect(() => {
     setRandomKana();
+    setNextKana(false);
     setStreak(0);
     setMaxStreak(0);
   }, []);
@@ -53,18 +61,13 @@ function App() {
       </div>
 
       <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.5 }}
+        animate={nextKana ? "hidden" : "visible"}
         variants={{
-          hidden: { opacity: 0, x: 50 },
-          visible: { opacity: 1, x: 0 },
+          hidden: { opacity: 0, y: -50, transition: { duration: 0 } },
+          visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
         }}
       >
-        <div className="text-9xl font-bold mb-8">
-          {randomSelect(kana[current].hiragana, kana[current].katakana)}
-        </div>
+        <div className="text-[250px] font-bold m-auto">{kanaOut}</div>
       </motion.div>
       <div className="mb-8">
         <form onSubmit={handleSubmit}>
