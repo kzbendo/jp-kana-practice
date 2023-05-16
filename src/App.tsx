@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { kana } from "./utils/kanaData";
 import { motion } from "framer-motion";
+import useMediaQuery from "./hooks/useMediaQuery";
 
 function randomSelect(...arr: any[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function App() {
+  const isAboveMediumScreens = useMediaQuery("(min-width: 1060px)");
+
   const [input, setInput] = useState("");
   const [current, setCurrent] = useState(0);
 
@@ -55,21 +58,24 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-green-950 text-white text-center">
-      <div className="p-6 mb-8">
+    <div className="flex relative min-h-screen bg-green-950 text-white text-center">
+      <div className="absolute w-full p-6 mb-8">
         <h1 className="text-2xl font-bold uppercase">Japanese Kana Practice</h1>
       </div>
 
       <motion.div
+        className="absolute top-1/4 w-full"
         animate={nextKana ? "hidden" : "visible"}
         variants={{
           hidden: { opacity: 0, y: -50, transition: { duration: 0 } },
           visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
         }}
       >
-        <div className="text-[250px] font-bold m-auto">{kanaOut}</div>
+        <div className="absolute top-1/4 w-full text-[250px] font-bold m-auto">
+          {kanaOut}
+        </div>
       </motion.div>
-      <div className="mb-8">
+      <div className="absolute top-2/3 w-full mb-8">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
