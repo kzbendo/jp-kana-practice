@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
-import { kana } from "./utils/kanaData";
 import { motion } from "framer-motion";
 import KanaDisplay from "./containers/KanaDisplay";
-
-function randomSelect(...arr: any[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 function App() {
   return (
