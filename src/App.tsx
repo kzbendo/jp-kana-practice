@@ -9,7 +9,7 @@ function App() {
         <h1 className="text-2xl font-bold uppercase">Japanese Kana Practice</h1>
       </div>
 
-      <div className="w-full mx-auto md:h-full">
+      <div className="mx-auto my-auto">
         <KanaDisplay />
       </div>
     </div>

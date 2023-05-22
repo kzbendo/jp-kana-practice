@@ -1,15 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const ScoreMark = ({ show, correct }) => {
+const ScoreMark = ({ correct }: { correct: boolean }) => {
   return (
     <div className="max-w-[200px]">
       <motion.img
-        animate={show ? "visible" : "hidden"}
-        variants={{
-          hidden: { opacity: 0, y: 0, transition: { duration: 0.5 } },
-          visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+        animate={{
+          opacity: [0, 1, 0],
+          rotate: [-10 + Math.floor(Math.random() * 30)],
         }}
+        transition={{ duration: 1 }}
         src={correct ? "../assets/maru.png" : "../assets/batsu.png"}
       />
     </div>

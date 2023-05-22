@@ -61,8 +61,9 @@ function KanaDisplay() {
 
   useEffect(() => {
     setRandomKana();
-    setNextKana(false);
-    setMark(false);
+    setTimeout(() => {
+      setNextKana(false);
+    }, 1000);
     setStreak(0);
     setMaxStreak(0);
   }, []);
@@ -70,29 +71,28 @@ function KanaDisplay() {
   return (
     <div>
       <motion.div
-        className="absolute top-1/4 w-full"
+        className="w-full my-32"
         animate={nextKana ? "hidden" : "visible"}
         variants={{
           hidden: { opacity: 0, y: -50, transition: { duration: 0 } },
           visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
         }}
       >
-        <div className="absolute top-1/4 w-full text-[250px] font-bold m-auto">
-          {kanaOut}
-        </div>
+        <div className="w-full text-[250px] font-bold my-32">{kanaOut}</div>
       </motion.div>
-      <div className="absolute top-2/3 w-full mb-8">
+      <div className="relative">
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={input}
+            maxLength={3}
             onChange={handleChange}
-            className="block w-24 mx-auto pb-2 bg-transparent border-b-2 border-b-white outline-none text-center text-6xl"
+            className="block w-32 mx-auto pb-2 bg-transparent border-b-2 border-b-white outline-none text-center text-6xl"
           />
         </form>
-      </div>
-      <div className="absolute top-2/3 right-1/3 z-10">
-        <ScoreMark show={mark} correct={correct} />
+        <div className="absolute -top-2/3 left-1/4 z-10">
+          {mark && <ScoreMark correct={correct} />}
+        </div>
       </div>
     </div>
   );
