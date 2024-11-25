@@ -3,17 +3,34 @@ import { kana } from "../utils/kanaData";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { motion } from "framer-motion";
 import ScoreMark from "../components/ScoreMark";
+import useUpdateScore from "../hooks/useUpdateScore";
+
+let selectedKana = [...Array(kana.length)].map(() => Array(2).fill(false));
+let questions = 1;
+let kanaSelect = 0;
 
 function KanaDisplay() {
   const isAboveSmallScreens = useMediaQuery("(min-width: 768px)");
+  const [score, increment, reset] = useUpdateScore();
 
   function randomSelect(...arr: any[]) {
-    return arr[Math.floor(Math.random() * arr.length)];
+    let hirakata = Math.floor(Math.random() * arr.length);
+    return arr[hirakata];
   }
 
   function randomIndex() {
-    return Math.floor(Math.random() * kana.length);
+    let index = Math.floor(Math.random() * kana.length);
+    while (selectedKana[index][0] === true && selectedKana[index][1] === true) {
+      index = Math.floor(Math.random() * kana.length);
+      if (questions === kana.length * 2) {
+        console.log("done");
+        break;
+      }
+    }
+    return index;
   }
+
+  function checkSelected(index: number) {}
 
   const [input, setInput] = useState("");
   const [current, setCurrent] = useState(randomIndex);
@@ -30,8 +47,22 @@ function KanaDisplay() {
 
   const setRandomKana = () => {
     setPrev(current);
+    questions += 1;
+
+    kanaSelect = Math.floor(Math.random() * 2); //0 for hiragana or 1 for katakana
+
+    if (selectedKana[current][kanaSelect] === false) {
+      selectedKana[current][kanaSelect] = true;
+    } else {
+      kanaSelect ^= 1;
+      selectedKana[current][kanaSelect] = true;
+    }
+
+    kanaSelect === 0
+      ? setKanaOut(kana[current].hiragana)
+      : setKanaOut(kana[current].katakana);
     setCurrent(randomIndex);
-    setKanaOut(randomSelect(kana[current].hiragana, kana[current].katakana));
+    //setKanaOut(randomSelect(kana[current].hiragana, kana[current].katakana));
   };
 
   const handleChange = (e: any) => {
@@ -41,9 +72,13 @@ function KanaDisplay() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (input.toLowerCase() === kana[prev].romaji) {
-      setStreak(streak + 1);
-      setMaxStreak(Math.max(streak, maxStreak));
+      //setStreak(streak + 1);
+      //setMaxStreak(Math.max(streak, maxStreak));
       setCorrect(true);
+      {
+        increment;
+      }
+      //updateAnswer(input.toLowerCase(), prev, kanaSelect);
     } else {
       setStreak(0);
       setCorrect(false);
@@ -57,15 +92,22 @@ function KanaDisplay() {
       setNextKana(false);
       setMark(false);
     }, 1000);
+    console.log(JSON.stringify(selectedKana));
+    console.log(questions);
+    console.log("score is: " + score);
+    // console.log(selectedKana[current][]);
   };
 
   useEffect(() => {
+    selectedKana = [...Array(kana.length)].map(() => Array(2).fill(false));
     setRandomKana();
     setTimeout(() => {
       setNextKana(false);
     }, 1000);
     setStreak(0);
     setMaxStreak(0);
+    questions = 1;
+    console.log(JSON.stringify(selectedKana));
   }, []);
 
   return (
@@ -92,6 +134,7 @@ function KanaDisplay() {
         </form>
         <div className="absolute -top-2/3 left-1/4 z-10">
           {mark && <ScoreMark correct={correct} />}
+          <button onClick={increment}></button>
         </div>
       </div>
     </div>
